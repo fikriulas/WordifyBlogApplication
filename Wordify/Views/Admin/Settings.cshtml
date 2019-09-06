@@ -1,0 +1,63 @@
+﻿@model Settings
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if (ViewData["Success"] != null)
+{
+    <div class="card m-4 py-3 border-left-success">
+        <div class="card-body">
+            @ViewData["Success"]
+        </div>
+    </div>
+}
+<form asp-controller="Admin" asp-action="Settings" method="post" enctype="multipart/form-data">
+    <div class="card shadow mb-4 mx-2">
+
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Add Product</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group">
+                <input type="hidden" asp-for="Id" />
+                <label asp-for="SiteName"></label>
+                <input asp-for="SiteName" class="form-control" />
+                <span class="text-danger" asp-validation-for="SiteName"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SiteDescription"></label>
+                <input asp-for="SiteDescription" class="form-control" />
+                <span class="text-danger" asp-validation-for="SiteDescription"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SmtpAddress"></label>
+                <input asp-for="SmtpAddress" class="form-control" />
+                <span class="text-danger" asp-validation-for="SmtpAddress"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Port"></label>
+                <input asp-for="Port" class="form-control" />
+                <span class="text-danger" asp-validation-for="Port"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MailUserName"></label>
+                <input asp-for="MailUserName" class="form-control" />
+                <span class="text-danger" asp-validation-for="MailUserName"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MailPassword"></label>
+                <input asp-for="MailPassword" class="form-control" />
+                <span class="text-danger" asp-validation-for="MailPassword"></span>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>

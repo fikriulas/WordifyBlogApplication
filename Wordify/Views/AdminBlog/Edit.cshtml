@@ -1,0 +1,138 @@
+﻿@model EditBlogModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if (ViewData["SuccessSave"] != null)
+{
+    <div class="card m-4 py-3 border-left-success">
+        <div class="card-body">
+            @ViewData["SuccessSave"]
+        </div>
+    </div>
+}
+<form asp-controller="AdminBlog" asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div class="card shadow mb-4 mx-2">
+
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Blog Detail</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" />
+                <span class="text-danger" asp-validation-for="Title"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <input asp-for="Description" class="form-control" />
+                <span class="text-danger" asp-validation-for="Description"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HtmlContent"></label>
+                <input asp-for="HtmlContent" class="form-control" />
+
+                <span class="text-danger" asp-validation-for="HtmlContent"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsAppproved"></label>
+                <input asp-for="IsAppproved" class="form-control" />
+                <span class="text-danger" asp-validation-for="IsAppproved"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsSlider"></label>
+                <input asp-for="IsSlider" class="form-control" />
+                <span class="text-danger" asp-validation-for="IsSlider"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsHome"></label>
+                <input asp-for="IsHome" class="form-control" />
+                <span class="text-danger" asp-validation-for="IsHome"></span>
+            </div>
+            <div class="form-group">
+                <label>
+                    Category:
+                    @foreach (var category in Model.Categories)
+                    {
+
+                        @Html.Raw(category.Name + ", ");
+                    }
+                </label>
+                <select class="selectpicker form-control" name="category[]" asp-items="ViewBag.Categories" multiple></select>
+            </div>
+            <div class="form-group">
+                <label>File</label>
+                <input type="file" name="mainFile" class="form-control" />
+                <div style="margin:auto" class="my-2">
+                    <input type="hidden" asp-for="ImageUrl" />
+                    <img width="250px" src="~/Templates/wordify/images/@Model.ImageUrl" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
+
+<div class="card shadow mb-4 mx-2">
+
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Review List</h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-hover">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th></th>
+                <th></th>
+            </tr>
+            @if (Model.Reviews.Count() == 0)
+            {
+                <tr>
+                    <td colspan="4" align="center">There is nothing Blog here.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var review in Model.Reviews)
+                {
+                    <tr>
+                        <td>@review.Id</td>
+                        <td>@review.Name</td>
+
+                        <td width="15%">
+                            <a asp-controller="AdminBlog" asp-action="ReviewDetails" asp-route-id="@review.Id" title="Edit" class="btn btn-info btn-circle btn-md">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </td>
+                        <td width="15%">
+                            <form class="DeleteCategory" asp-controller="Category" asp-action="Delete">
+                                <input type="hidden" name="Id" id="Id" value="@review.Id" />
+                                <a title="Delete"  asp-controller="AdminBlog" asp-action="ReviewDelete" asp-route-id="@Model.Id" class="btn btn-danger btn-circle btn-md" onclick="return confirm('Are you sure you want to delete this?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary">Save</button>
+    </div>
+</div>

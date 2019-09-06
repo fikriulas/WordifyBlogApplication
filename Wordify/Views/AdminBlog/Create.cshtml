@@ -1,0 +1,63 @@
+﻿@model Blog
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form asp-controller="AdminBlog" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="card shadow mb-4">
+
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Add Product</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" class="form-control" />
+                <span class="text-danger" asp-validation-for="Title"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <input asp-for="Description" class="form-control" />
+                <span class="text-danger" asp-validation-for="Description"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HtmlContent"></label>
+                <input asp-for="HtmlContent" class="form-control" />
+
+                <span class="text-danger" asp-validation-for="HtmlContent"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsAppproved"></label>
+                <input asp-for="IsAppproved" class="form-control" />
+                <span class="text-danger" asp-validation-for="IsAppproved"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsSlider"></label>
+                <input asp-for="IsSlider" class="form-control" />
+                <span class="text-danger" asp-validation-for="IsSlider"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsHome"></label>
+                <input asp-for="IsHome" class="form-control" />
+                <span class="text-danger" asp-validation-for="IsHome"></span>
+            </div>
+            <div class="form-group">
+                <select class="selectpicker form-control" name="category[]" asp-items="ViewBag.Categories" multiple></select>
+            </div>
+            <div class="form-group">
+                <label>File</label>
+                <input type="file" name="mainFile" class="form-control" />
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>

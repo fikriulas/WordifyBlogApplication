@@ -1,0 +1,155 @@
+﻿@model ForRelatedModel
+<section class="site-section py-lg">
+    <div class="container">
+
+        <div class="row blog-entries element-animate">
+
+            <div class="col-md-12 col-lg-8 main-content">
+                <img src="~/Templates/wordify/images/@Model.blog.ImageUrl" alt="Image" class="img-fluid mb-5">
+                <div class="post-meta">
+                    <span class="author mr-2"><img src="~/Templates/wordify/images/person_1.jpg" alt="Colorlib" class="mr-2"> Colorlib</span>&bullet;
+                    <span class="mr-2">@Model.blog.DateAdded.ToShortDateString() </span> &bullet;
+                    <span class="ml-2"><span class="fa fa-comments"></span> @Model.blog.totalReview</span>
+                </div>
+                <h1 class="mb-4">@Model.blog.Title</h1>
+                @foreach (var category in Model.blog.Categories)
+                {
+                    <a asp-controller="Blog" asp-action="List" asp-route-id="@category.Id" class="category mb-5">@category.Name</a>
+                }
+
+                <div class="post-content-body">
+                    @Html.Raw(Model.blog.HtmlContent)
+                </div>
+
+                <div class="pt-5">
+                    <h3 class="mb-5"><span id="number">@Model.blog.totalReview</span> Comments</h3>
+                    <ul class="comment-list">
+                        @if (Model.blog.totalReview == 0)
+                        {
+                            <div id="noComment">
+                                <p>There is no Comment Here</p>
+                            </div>
+
+                        }
+                        else
+                        {
+                            @foreach (var comment in Model.blog.Reviews)
+                            {
+                                <li class="comment">
+                                    <div class="vcard">
+                                        <img src="~/Templates/wordify/images/person_1.jpg" alt="Image placeholder">
+                                    </div>
+                                    <div class="comment-body">
+                                        <h3>@comment.Name</h3>
+                                        <div class="meta">@comment.dateAdded.ToShortDateString()</div>
+                                        <p>@comment.Message</p>
+                                        <p><a href="#" class="reply rounded">Reply</a></p>
+                                    </div>
+                                </li>
+                            }
+                        }
+
+                    </ul>
+                    <!-- END comment-list -->
+                    <div class="comment-form-wrap pt-5">
+                        <h3 class="mb-5">Leave a comment</h3>
+                        <form class="AddReview" asp-controller="Blog" asp-action="Review" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input type="hidden" name="BlogId" id="BlogId" value="@Model.blog.Id" />
+                                <input type="text" name="Name" id="Name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" name="Email" id="Email" class="form-control">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea name="Message" id="Message" cols="30" rows="10" class="form-control"></textarea>
+
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                @section reviewScript{
+                    <script>
+                        $(".AddReview").submit(function (event) {
+                            event.preventDefault();
+                            var form = $(this);
+                            var token = $('input[name="__RequestVerificationToken"]', form).val();
+                            var data = { Name: $("#Name").val(), Email: $("#Email").val(), Message: $("#Message").val(), Point: $("#Point").val(), BlogId: $("#BlogId").val() };
+                            var dataWithToken = $.extend(data, { '__RequestVerificationToken': token });
+
+                            $.ajax({
+                                url: form.attr("action"),
+                                type: "POST",
+                                data: dataWithToken,
+                                beforeSend: function () {
+                                    $("#ajax-loading").show();
+                                },
+                                complete: function () {
+                                    $("#ajax-loading").hide();
+                                },
+                                success: function () {
+                                    var dt = new Date();
+                                    var review = '<li class="comment"><div class="vcard"><img src="/Templates/wordify/images/person_1.jpg" alt="Image placeholder"></div><div class="comment-body"><h3>' + data.Name + '</h3><div class="meta">' + dt.getDay() + ':' + dt.getMonth() + ':' + dt.getFullYear() + '</div><p>' + data.Message + '</p><p><a href="#" class="reply rounded">Reply</a></p></div></li>';
+                                    $("#noComment").hide();
+                                    var number = parseInt($('#number').text());
+                                    number += 1;
+                                    $("#number").text(number);
+                                    $(".comment-list").append(review);
+                                },
+                                error: function () {
+                                    alert("Your comment could not be forwarded.");
+                                }
+                            });
+                        });
+                    </script>
+                }
+            </div>
+
+            <!-- END main-content -->
+            @await Component.InvokeAsync("Sidebar")
+
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="mb-3 ">Related Post</h2>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var related in Model.blogs)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <a asp-controller="Blog" asp-action="Detail" asp-route-id="@related.Id" class="a-block sm d-flex align-items-center height-md" style="background-image: url('../../Templates/wordify/images/@related.ImageUrl'); ">
+                        <div class="text">
+                            <div class="post-meta">
+                                @foreach (var category in related.Categories)
+                                {
+                                    <span class="category">@category.Name</span>
+                                }
+                                <span class="mr-2">@related.DateAdded.ToShortDateString() </span> &bullet;
+                                <span class="ml-2"><span class="fa fa-comments"></span> @related.totalReview</span>
+                            </div>
+                            <h3>@related.Title</h3>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+
+</section>
+<!-- END section -->

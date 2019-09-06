@@ -1,0 +1,163 @@
+﻿@model Review
+@{
+    ViewData["Title"] = "ReviewDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="card m-4 py-3 border-left-success" id="SuccessMail" style="display:none">
+    <div id="mailText" class="card-body">
+
+    </div>
+</div>
+<div class="card shadow mb-4 mx-2">
+
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Review By <u>@Model.Name</u></h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <tr>
+                <th>Name</th>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <th>E-Mail</th>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>@Model.dateAdded.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <th>Blog Title</th>
+                <td>@Model.Blog.Title</td>
+            </tr>
+            <tr>
+                <th>Message</th>
+                <td>@Model.Message</td>
+            </tr>
+        </table>
+        <div class="card-footer">
+            <a asp-controller="AdminBlog" asp-action="ReviewDelete" asp-route-id="@Model.Id" title="Delete" onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger">Delete</a>
+            <button id="showReply" onclick="myFunction()" class="btn btn-primary btn-icon-split ml-2">
+                <span class="icon text-white-50">
+                    <i class="fas fa-flag"></i>
+                </span>
+                <span class="text">Send Message</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<div class="card shadow mb-4 mx-2" id="ReplyDiv" style="display: none;">
+    <form id="sendMail" asp-controller="AdminBlog" asp-action="ReplyReview" method="post">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Reply Review</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="hidden" id="toEmail" name="toEmail" value="@Model.Email" />
+                <input class="form-control" name="subject" id="subject" />
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea class="form-control" name="reply" id="reply" cols="30" rows="8"></textarea>
+            </div>
+        </div>
+        <card class="card-footer">
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </card>
+    </form>
+</div>
+<!--
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mailModal">
+    Launch demo modal
+</button>
+    -->
+<div id="mailModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Please Wait</h5>
+            </div>
+            <div class="modal-body">
+                <p>Please wait while <b>E-Mail sending.</b>Don't close the Page</p>
+
+            </div>
+            <div class="modal-footer">
+                <img src="~/Templates/AdminTemplate/img/ajax-loading-gif.gif" width="50px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        function myFunction() {
+            var x = document.getElementById("ReplyDiv");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+}
+
+@section sendMail{
+    <script>
+        $("#sendMail").submit(function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            var data = { toEmail: $("#toEmail").val(), reply: $("#reply").val(), subject: $("#subject").val() };
+            var dataWithToken = $.extend(data, { '__RequestVerificationToken': token });
+
+            $.ajax({
+                url: form.attr("action"),
+                type: "POST",
+                data: dataWithToken,
+                beforeSend: function () {
+                    $("#mailModal").show();
+                },
+                complete: function () {
+                    $("#mailModal").hide();
+                },
+                success: function () {                    
+                    var x = document.getElementById("SuccessMail");
+                    $("#mailText").text("E-Mail Send Successfully");
+                    x.style.display = "block";    
+                    $("#reply").val("");
+                    $("#subject").val("");   
+                    var x = document.getElementById("ReplyDiv");
+                    x.style.display = "none"; // mail gönderme divini kapatır.
+                                    
+                    
+                },
+                error: function (data) {                    
+                    $("#SuccessMail").addClass("card m-4 py-3 border-left-danger");
+                    $("#mailText").text(data.responseText);
+                    var x = document.getElementById("SuccessMail");
+                    x.style.display = "block";
+                    $("#reply").val("");
+                    $("#subject").val("");   
+                    var x = document.getElementById("ReplyDiv");
+                    x.style.display = "none"; // mail gönderme divini kapatır.
+
+                }
+            });
+        });
+
+    </script>
+}

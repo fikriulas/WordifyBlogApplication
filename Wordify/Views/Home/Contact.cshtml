@@ -1,0 +1,70 @@
+﻿@model Contact
+@{
+    ViewData["Title"] = "Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row mb-4 mt-3">
+        <div class="col-md-6">
+            <h1>Contact Me</h1>
+        </div>
+    </div>
+    <div class="row blog-entries">
+        <div class="col-md-12 col-lg-8 main-content">
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @ViewBag.Message
+                </div>
+            }
+            <form asp-controller="Home" asp-action="Contact" method="post">
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control ">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 form-group">
+                        <label asp-for="Email"></label>
+                        <small class="text-muted">We don't publish anyone this information.</small>
+                        <input type="text" asp-for="Email" class="form-control ">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <label asp-for="Message"></label>
+                        <textarea asp-for="Message" class="form-control " onkeyup="countChar(this)" cols="30" rows="8"></textarea>
+                        <div id="charNum"></div>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <input type="submit" value="Send Message" class="btn btn-primary">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- END main-content -->
+
+        @await Component.InvokeAsync("Sidebar")
+        <!-- END sidebar -->
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        function countChar(val) {
+            var len = val.value.length;
+            if (len >= 300) {
+                val.value = val.value.substring(0, 300);
+            } else {
+                $('#charNum').text("Characters remaining: "+(300 - len));
+            }
+        };
+
+    </script>
+}
