@@ -13,7 +13,17 @@
         <div class="bio text-center">
             <img src="~/Templates/wordify/images/person_1.jpg" alt="Image Placeholder" class="img-fluid">
             <div class="bio-body">
-                <h2>David Craig</h2>
+                <h2>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @User.Identity.Name
+                    }
+                    else
+                    {
+                        @Html.Raw("David Craig")
+                    }
+
+                </h2>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem facilis sunt repellendus excepturi beatae porro debitis voluptate nulla quo veniam fuga sit molestias minus.</p>
                 <p><a href="#" class="btn btn-primary btn-sm rounded">Read my bio</a></p>
                 <p class="social">

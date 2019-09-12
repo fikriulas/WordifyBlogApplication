@@ -15,7 +15,17 @@
     <link rel="stylesheet" href="~/Templates/wordify/fonts/fontawesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/Templates/wordify/fonts/flaticon/font/flaticon.css">
     @RenderSection("scripts", false)
-    
+    <style>
+        #welcome
+        {
+            color:#b287f8;
+            float:right;
+        }
+        #welcomeUser:hover
+        {
+            color:#f6f6f6;
+        }
+    </style>
     <!-- Theme Style -->
     <link rel="stylesheet" href="~/Templates/wordify/css/style.css">
 </head>
@@ -36,10 +46,12 @@
                         </div>
                         <div class="col-3 search-top">
                             <!-- <a href="#"><span class="fa fa-search"></span></a> -->
-                            <form action="#" class="search-top-form">
-                                <span class="icon fa fa-search"></span>
-                                <input type="text" id="s" placeholder="Type keyword to search...">
-                            </form>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <span id="welcome">
+                                    @Html.Raw("Welcome, ") <span id="welcomeUser">@User.Identity.Name</span>
+                                </span>
+                            }
                         </div>
                     </div>
                 </div>
@@ -76,6 +88,23 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
                             </li>
+                            <li class="nav-item">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+
+                                }
+                            </li>
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                                </li>
+                            }
                         </ul>
 
                     </div>

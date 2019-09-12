@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wordify.WebUI", "Wordify\Wordify.WebUI.csproj", "{796F3B87-A986-4A89-9243-314ACAA5847D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wordify.WebUI", "Wordify\Wordify.WebUI.csproj", "{796F3B87-A986-4A89-9243-314ACAA5847D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wordify.Entity", "Wordify.Entity\Wordify.Entity.csproj", "{314EB2CF-679F-4D90-B08E-516E7ADE14C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wordify.Entity", "Wordify.Entity\Wordify.Entity.csproj", "{314EB2CF-679F-4D90-B08E-516E7ADE14C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wordify.Data", "Wordify.Data\Wordify.Data.csproj", "{57B94455-D0E7-4581-91CF-CC905709FAC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wordify.Data", "Wordify.Data\Wordify.Data.csproj", "{57B94455-D0E7-4581-91CF-CC905709FAC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

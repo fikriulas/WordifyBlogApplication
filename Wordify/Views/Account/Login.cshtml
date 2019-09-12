@@ -1,0 +1,40 @@
+﻿@model  LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ <div class="container">
+        <div class="row mb-4 mt-3">
+            <div class="col-md-6">
+                <h1>Log <b>In</b></h1>
+            </div>
+        </div>
+        <div class="row blog-entries">
+            <div class="col-md-12 col-lg-8 main-content">               
+                <form asp-controller="Account" asp-action="Login" method="post">
+                    <div class="text-danger" asp-validation-summary="All">
+                    </div>
+                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <label asp-for="Email"></label>
+                            <input asp-for="Email" class="form-control ">
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label asp-for="Password"></label>
+                            <input asp-for="Password" class="form-control ">
+
+                        </div>
+                        <div class="form-group col-md-12 text-left">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-send fa-fw"></i> Login</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- END main-content -->
+            @await Component.InvokeAsync("Sidebar")
+            <!-- END sidebar -->
+        </div>
+    </div>
+

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Wordify.Data.Abstract;
 using Wordify.Data.Concrete.EntityFramework;
+using Wordify.Identity;
 
 namespace Wordify.WebUI
 {
@@ -28,18 +30,28 @@ namespace Wordify.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            
-            
+            services.AddDbContext<WordifyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Wordify.WebUI")));
+            services.AddDbContext<ApplicationIdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Wordify.WebUI")));
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;                
+            }).AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+              .AddDefaultTokenProviders();
+
             services.AddTransient<IBlogRepository, EfBlogRepository>();
             services.AddTransient<ICategoryRepository, EfCategoryRepository>();
             services.AddTransient<IContactRepository, EfContactRepository>();
-            services.AddTransient<IReviewRepository, EfReviewRepository>();            
+            services.AddTransient<IReviewRepository, EfReviewRepository>();
             services.AddTransient<ISettingsRepository, EfSettingsRepository>();
             services.AddTransient<IUnitOfWork, EfUnitOfWork>();
-            services.AddDbContext<WordifyContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Wordify.WebUI")));
-
+            /*services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+             {
+                 options.User.RequireUniqueEmail = true;
+             }).AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+            .AddDefaultTokenProviders();
+            */
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            
+
             services.AddMvc();
         }
 
@@ -50,6 +62,7 @@ namespace Wordify.WebUI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication(); // kullanıcı rol için.            
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions
@@ -63,9 +76,9 @@ namespace Wordify.WebUI
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });            
-            SeedData.EnsurePopulated(app);           
-
+            });
+            SeedData.EnsurePopulated(app);
+            SeedIdentity.CreateIdentityUsers(app.ApplicationServices, Configuration).Wait();// asenktron olduğu için wait.
         }
     }
 }
